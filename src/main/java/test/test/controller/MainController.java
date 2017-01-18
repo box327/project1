@@ -1,20 +1,36 @@
 package test.test.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import test.test.service.QnaService;
+
 @Controller
 public class MainController {
 	
+	private static final Logger log = LoggerFactory.getLogger(MainController.class);
+	@Autowired
+	QnaService qnaService;
+
 	@GetMapping("/hello")
 	public String hello(@RequestParam()String name,Integer age,Model model)
 	{
-		System.out.println(name);
 		model.addAttribute("name", name);
 		model.addAttribute("age", age);
 		return "hello";
+	}
+	
+	@GetMapping("/")
+	public String index(Model model)
+	{
+		model.addAttribute("qnaList",qnaService.getQnaList());
+		log.debug("index");
+		return "index";
 	}
 }
 
