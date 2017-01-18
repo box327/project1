@@ -1,15 +1,32 @@
 package test.test.domain;
 
+import java.util.Date;
+
 public class QuestionData {
 	private String writer;
 	private String title;
 	private String contents;
-	
+	private Date writeDate;
 	
 	public QuestionData() {
 		super();
+		writeDate = new Date();
 	}
 	
+	
+	
+	public Date getWriteDate() {
+		return writeDate;
+	}
+
+
+
+	public void setWriteDate(Date writeDate) {
+		this.writeDate = writeDate;
+	}
+
+
+
 	public String getWriter() {
 		return writer;
 	}
@@ -31,7 +48,8 @@ public class QuestionData {
 	
 	@Override
 	public String toString() {
-		return "QuestionData [writer=" + writer + ", title=" + title + ", contents=" + contents + "]";
+		return "QuestionData [writer=" + writer + ", title=" + title + ", contents=" + contents + ", writeDate="
+				+ writeDate + "]";
 	}
 	
 }
