@@ -2,10 +2,25 @@ package test.test.domain;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class QuestionData {
+	
+	@Id
+	@GeneratedValue
+	private long id;
+	
+	@Column(length=20, nullable=false)
 	private String writer;
+	@Column(length=40, nullable=false)
 	private String title;
+	@Column(length=2000, nullable=false)
 	private String contents;
+	@Column
 	private Date writeDate;
 	
 	public QuestionData() {
@@ -15,6 +30,18 @@ public class QuestionData {
 	
 	
 	
+	public long getId() {
+		return id;
+	}
+
+
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+
+
 	public Date getWriteDate() {
 		return writeDate;
 	}
@@ -48,8 +75,8 @@ public class QuestionData {
 	
 	@Override
 	public String toString() {
-		return "QuestionData [writer=" + writer + ", title=" + title + ", contents=" + contents + ", writeDate="
-				+ writeDate + "]";
+		return "QuestionData [id=" + id + ", writer=" + writer + ", title=" + title + ", contents=" + contents
+				+ ", writeDate=" + writeDate + "]";
 	}
 	
 }

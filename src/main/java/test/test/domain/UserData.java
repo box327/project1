@@ -1,12 +1,25 @@
 package test.test.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+
+@Entity
 public class UserData {
+	
+	@Id
+	@GeneratedValue
+	private long id;
+	@Column(length = 15, nullable = false, unique = true)
 	private String userId;
+	@Column(length = 20, nullable = false)
 	private String password;
+	@Column(length = 20, nullable = false)
 	private String name;
+	@Column(length = 50, nullable = false)
 	private String email;
-	
-	
 	
 	public UserData() {
 		super();
@@ -20,6 +33,19 @@ public class UserData {
 		this.email = email;
 	}
 	
+	public boolean checkPassword(String password)
+	{
+		return this.password == password;
+	}
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
 	public String getUserId() {
 		return userId;
 	}
@@ -46,7 +72,8 @@ public class UserData {
 	}
 	@Override
 	public String toString() {
-		return "UserData [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
+		return "UserData [id=" + id + ", userId=" + userId + ", password=" + password + ", name=" + name + ", email="
+				+ email + "]";
 	}
 	
 	

@@ -16,7 +16,7 @@ public class MainController {
 	private static final Logger log = LoggerFactory.getLogger(MainController.class);
 	@Autowired
 	QnaService qnaService;
-
+	
 	@GetMapping("/hello")
 	public String hello(@RequestParam()String name,Integer age,Model model)
 	{
