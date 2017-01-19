@@ -39,6 +39,12 @@ public class QuestionData {
 
 
 
+	public UserData getWriter() {
+		return writer;
+	}
+
+
+
 	public long getId() {
 		return id;
 	}

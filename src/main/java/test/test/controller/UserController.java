@@ -1,8 +1,5 @@
 package test.test.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -18,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import test.test.domain.UserData;
 import test.test.domain.UserRepository;
+import test.test.utills.AuthUtills;
 
 @Controller
 @RequestMapping("/user")
@@ -56,20 +54,10 @@ public class UserController {
 		UserData user = userRepository.findByUserId(userId);
 		if(user != null && user.checkPassword(password))
 		{
-			session.setAttribute("loginUser", user);
+			AuthUtills.login(session, user);
 			return "redirect:/";
 		}
 		return "user/login_failed";
-	}
-	
-	@GetMapping("/{id}/form")
-	public String updadeForm(Model model, @PathVariable(value="id")Long id)
-	{
-		log.debug(id.toString());
-		UserData user = userRepository.findOne(id);
-		model.addAttribute("updateUser", user);
-		log.debug(user.toString());
-		return "user/form";
 	}
 	
 	@GetMapping("/form")
@@ -81,14 +69,29 @@ public class UserController {
 	@GetMapping("/logout")
 	public String userlogout(HttpSession session)
 	{
-		session.removeAttribute("loginUser");
+		AuthUtills.logout(session);
 		return "redirect:/";
+	}
+	
+	@GetMapping("/{id}/form")
+	public String updadeForm(Model model, @PathVariable(value="id")Long id,HttpSession session)
+	{
+		illegalAccessCheck(id, session);
+		
+		log.debug(id.toString());
+		UserData user = userRepository.findOne(id);
+		model.addAttribute("updateUser", user);
+		log.debug(user.toString());
+		return "user/form";
 	}
 	
 	
 	@PutMapping("/update")
-	public String update(UserData userData ,Long id)
+	public String update(UserData userData ,Long id,HttpSession session)
 	{
+		
+		illegalAccessCheck(id, session);
+		
 		log.debug(userData.toString());
 		UserData user = userRepository.findOne(id);
 		log.debug(user.toString());
@@ -101,6 +104,13 @@ public class UserController {
 			userRepository.save(user);
 		
 		return "redirect:/user/list";
+	}
+
+	private void illegalAccessCheck(Long id, HttpSession session) throws IllegalAccessError {
+		UserData loginUser = AuthUtills.getLoginUser(session);
+
+		if(loginUser == null || loginUser.getId() != id)
+			throw new IllegalAccessError();
 	}
 	
 }

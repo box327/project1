@@ -33,6 +33,14 @@ public class UserData {
 		this.email = email;
 	}
 	
+	public boolean checkUser(UserData user)
+	{
+		if(this.id == user.id)
+			return true;
+		
+		return false;
+	}
+	
 	public boolean checkPassword(String password)
 	{
 		return this.password.equals(password);
