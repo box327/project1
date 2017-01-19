@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity
 public class QuestionData {
@@ -14,8 +16,9 @@ public class QuestionData {
 	@GeneratedValue
 	private long id;
 	
-	@Column(length=20, nullable=false)
-	private String writer;
+	@OneToOne()
+	private UserData writer;
+	
 	@Column(length=40, nullable=false)
 	private String title;
 	@Column(length=2000, nullable=false)
@@ -30,6 +33,12 @@ public class QuestionData {
 	
 	
 	
+	public void setWriter(UserData writer) {
+		this.writer = writer;
+	}
+
+
+
 	public long getId() {
 		return id;
 	}
@@ -54,12 +63,6 @@ public class QuestionData {
 
 
 
-	public String getWriter() {
-		return writer;
-	}
-	public void setWriter(String writer) {
-		this.writer = writer;
-	}
 	public String getTitle() {
 		return title;
 	}

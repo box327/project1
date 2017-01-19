@@ -40,10 +40,10 @@ public class UserData {
 	
 	public boolean userUpdate(UserData updateUser)
 	{
-		if(this.userId.equals(updateUser.getUserId()) && checkPassword(updateUser.getPassword()))
+		if(this.userId.equals(updateUser.userId) && checkPassword(updateUser.password))
 		{
-			this.email = updateUser.getEmail();
-			this.name = updateUser.getName();
+			this.email = updateUser.email;
+			this.name = updateUser.name;
 			return true;
 		}
 		return false;
