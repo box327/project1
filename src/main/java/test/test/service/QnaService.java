@@ -25,4 +25,8 @@ public class QnaService {
 	public List<QuestionData> getQnaList() {
 		return (List<QuestionData>) questionRepository.findAll();
 	}
+
+	public QuestionData getQnaContents(Long id) {
+		return questionRepository.findOne(id);
+	}
 }

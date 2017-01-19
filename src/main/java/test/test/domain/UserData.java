@@ -38,6 +38,17 @@ public class UserData {
 		return this.password.equals(password);
 	}
 	
+	public boolean userUpdate(UserData updateUser)
+	{
+		if(this.userId.equals(updateUser.getUserId()) && checkPassword(updateUser.getPassword()))
+		{
+			this.email = updateUser.getEmail();
+			this.name = updateUser.getName();
+			return true;
+		}
+		return false;
+	}
+	
 	public long getId() {
 		return id;
 	}

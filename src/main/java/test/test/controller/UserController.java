@@ -53,7 +53,7 @@ public class UserController {
 	{
 		log.debug("userId : " + userId + " password : " + password);
 		UserData user = userRepository.findByUserId(userId);
-		if(user != null && !user.checkPassword(password))
+		if(user != null && user.checkPassword(password))
 		{
 			session.setAttribute("loginUser", user);
 			return "redirect:/";
@@ -93,13 +93,12 @@ public class UserController {
 		log.debug(user.toString());
 		log.debug("user" + user.getUserId().equals(userData.getUserId()) );
 		log.debug("password" + user.checkPassword(userData.getPassword()));
-		if(user.getUserId().equals(userData.getUserId()) && user.checkPassword(userData.getPassword()))
-		{
-			log.debug("update!");
-			user.setEmail(userData.getEmail());
-			user.setName(userData.getName());
+		
+		boolean check = user.userUpdate(userData);
+		
+		if(check == true)
 			userRepository.save(user);
-		}
+		
 		return "redirect:/user/list";
 	}
 	
