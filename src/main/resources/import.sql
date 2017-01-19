@@ -1,0 +1,1 @@
+insert into user_data(id,email,user_id,password,name) values(1,'test@test','test','1234','tester')

@@ -53,8 +53,9 @@ public class UserController {
 	{
 		log.debug("userId : " + userId + " password : " + password);
 		UserData user = userRepository.findByUserId(userId);
-		if(user != null && user.checkPassword(password))
+		if(user != null && !user.checkPassword(password))
 		{
+			session.setAttribute("user", user);
 			return "redirect:/";
 		}
 		return "user/login_failed";
@@ -69,6 +70,13 @@ public class UserController {
 		log.debug(user.toString());
 		return "user/form";
 	}
+	
+	@GetMapping("/form")
+	public String userForm()
+	{
+		return "user/form";
+	}
+	
 	
 	@PostMapping("/update")
 	public String update(Model model,UserData userData ,Long id)
