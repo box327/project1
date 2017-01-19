@@ -2,6 +2,8 @@ package test.test.controller;
 
 import java.util.Date;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +24,12 @@ public class QnaController {
 	QnaService qnaService;
 	
 	@GetMapping("/form")
-	public String qnaForm()
+	public String qnaForm(HttpSession session)
 	{
+		if(session.getAttribute("loginUser") == null)
+		{
+			return "redirect:/";
+		}
 		return "qna/form";
 	}
 	
@@ -33,7 +39,6 @@ public class QnaController {
 		questionData.setWriteDate(new Date());
 		log.debug(questionData.toString());
 		qnaService.qnaCreate(questionData);
-		
 		return "redirect:/";
 	}
 }

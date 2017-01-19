@@ -35,7 +35,7 @@ public class UserData {
 	
 	public boolean checkPassword(String password)
 	{
-		return this.password == password;
+		return this.password.equals(password);
 	}
 	
 	public long getId() {

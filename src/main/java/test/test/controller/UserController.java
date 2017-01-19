@@ -55,7 +55,7 @@ public class UserController {
 		UserData user = userRepository.findByUserId(userId);
 		if(user != null && !user.checkPassword(password))
 		{
-			session.setAttribute("user", user);
+			session.setAttribute("loginUser", user);
 			return "redirect:/";
 		}
 		return "user/login_failed";
@@ -66,7 +66,7 @@ public class UserController {
 	{
 		log.debug(id.toString());
 		UserData user = userRepository.findOne(id);
-		model.addAttribute("user", user);
+		model.addAttribute("updateUser", user);
 		log.debug(user.toString());
 		return "user/form";
 	}
@@ -77,16 +77,29 @@ public class UserController {
 		return "user/form";
 	}
 	
+	@GetMapping("/logout")
+	public String userlogout(HttpSession session)
+	{
+		session.removeAttribute("loginUser");
+		return "redirect:/";
+	}
+	
 	
 	@PostMapping("/update")
-	public String update(Model model,UserData userData ,Long id)
+	public String update(UserData userData ,Long id)
 	{
+		log.debug(userData.toString());
 		UserData user = userRepository.findOne(id);
-		user.setEmail(userData.getEmail());
-		user.setName(userData.getName());
-		user.setUserId(userData.getUserId());
-		user.setPassword(userData.getPassword());
-		userRepository.save(user);
+		log.debug(user.toString());
+		log.debug("user" + user.getUserId().equals(userData.getUserId()) );
+		log.debug("password" + user.checkPassword(userData.getPassword()));
+		if(user.getUserId().equals(userData.getUserId()) && user.checkPassword(userData.getPassword()))
+		{
+			log.debug("update!");
+			user.setEmail(userData.getEmail());
+			user.setName(userData.getName());
+			userRepository.save(user);
+		}
 		return "redirect:/user/list";
 	}
 	
