@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import test.test.domain.AnswerData;
 import test.test.domain.QuestionData;
 import test.test.domain.UserData;
+import test.test.service.AnswerService;
 import test.test.service.QnaService;
 import test.test.utills.AuthUtills;
 
@@ -29,7 +31,10 @@ public class QnaController {
 	@Autowired
 	QnaService qnaService;
 	
-	@GetMapping("/form")
+	@Autowired
+	AnswerService answerService;
+	
+	@GetMapping("/new")
 	public String qnaForm(HttpSession session)
 	{
 		if(session.getAttribute("loginUser") == null)
@@ -39,7 +44,7 @@ public class QnaController {
 		return "qna/form";
 	}
 	
-	@GetMapping("{id}/form")
+	@GetMapping("{id}/edit")
 	public String qnaUpdateForm(HttpSession session)
 	{
 		if(session.getAttribute("loginUser") == null)
@@ -49,14 +54,14 @@ public class QnaController {
 		return "qna/form";
 	}
 	
-	@PutMapping("/update")
+	@PutMapping("/{{id}}")
 	public String qnaUpdate(HttpSession session, QuestionData updateData)
 	{
 		
 		return "redirect:/contents/" + updateData.getId();
 	}
 	
-	@DeleteMapping("/question/{id}")
+	@DeleteMapping("/{id}")
 	public String qnaDelete(HttpSession session, QuestionData deleteData)
 	{
 		UserData loginUser = AuthUtills.getLoginUser(session);
@@ -71,7 +76,7 @@ public class QnaController {
 		return "redirect:/";
 	}
 	
-	@PostMapping("/question")
+	@PostMapping("/")
 	public String qnaQuestion(QuestionData questionData,HttpSession session)
 	{
 		UserData loginUser = AuthUtills.getLoginUser(session);
@@ -88,7 +93,27 @@ public class QnaController {
 	public String qnaQuestion(Model model,QuestionData questionData, @PathVariable(name = "id")Long id)
 	{
 		QuestionData question = qnaService.getQnaContents(id);
+		log.debug(question.toString());
 		model.addAttribute("contents", question);
 		return "qna/show";
 	}
+	
+	@PostMapping("/{id}/answer")
+	public String answerListFromQuestion(AnswerData answer,@PathVariable(name = "id")Long questionId ,HttpSession session)
+	{
+		
+		
+		
+		UserData loginUser = AuthUtills.getLoginUser(session);
+		QuestionData question = qnaService.getQnaContents(questionId);
+		
+		answer.setQuestion(question);
+		answer.setWriter(loginUser);
+		
+		log.debug(answer.toString());
+		
+		answerService.answerCreate(answer);
+		return "redirect:/qna/contents/" + answer.getQuestion().getId();
+	}
+	
 }

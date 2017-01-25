@@ -1,9 +1,12 @@
 package test.test.domain;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 
 @Entity
@@ -20,7 +23,9 @@ public class UserData {
 	private String name;
 	@Column(length = 50, nullable = false)
 	private String email;
+
 	
+
 	public UserData() {
 		super();
 	}

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,19 +27,73 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepository;
 	
-	@PostMapping("/create")
-	public String createUser(UserData userData)
-	{
-		log.debug("test");
-		userRepository.save(userData);
-		return "redirect:/user/list";
-	}
-	
-	@GetMapping("/list")
+	@GetMapping("/")
 	public String listUser(Model model)
 	{
 		model.addAttribute("userList", userRepository.findAll());
 		return "user/list";
+	}
+	
+	@GetMapping("/new")
+	public String userForm()
+	{
+		return "user/form";
+	}
+	
+	@PostMapping("/")
+	public String createUser(UserData userData)
+	{
+		log.debug("test");
+		userRepository.save(userData);
+		return "redirect:/user/";
+	}
+	
+	@GetMapping("/{id}/edit")
+	public String updadeForm(Model model, @PathVariable(value="id")Long id,HttpSession session)
+	{
+		illegalAccessCheck(id, session);
+		
+		log.debug(id.toString());
+		UserData user = userRepository.findOne(id);
+		model.addAttribute("updateUser", user);
+		log.debug(user.toString());
+		return "user/form";
+	}
+	
+	@GetMapping("/{id}")
+	public String getProfile(@PathVariable(value="id")Long id,HttpSession session,Model model)
+	{
+		UserData user = userRepository.findOne(id);
+		model.addAttribute("user", user);
+		
+		return "user/profile";
+	}
+	
+	@PutMapping("/{id}")
+	public String updateUser(UserData userData ,@PathVariable(value="id")Long id,HttpSession session)
+	{
+		
+		illegalAccessCheck(id, session);
+		
+		log.debug(userData.toString());
+		UserData user = userRepository.findOne(id);
+		log.debug(user.toString());
+		log.debug("user" + user.getUserId().equals(userData.getUserId()) );
+		log.debug("password" + user.checkPassword(userData.getPassword()));
+		
+		boolean check = user.userUpdate(userData);
+		
+		if(check == true)
+			userRepository.save(user);
+		
+		return "redirect:/user/";
+	}
+	
+	@DeleteMapping("/{id}")
+	public String deleteUser(@PathVariable(value="id")Long id)
+	{
+		userRepository.delete(id);
+		return "redirect:/user/list";
 	}
 	
 	@GetMapping("/login")
@@ -60,12 +115,6 @@ public class UserController {
 		return "user/login_failed";
 	}
 	
-	@GetMapping("/form")
-	public String userForm()
-	{
-		return "user/form";
-	}
-	
 	@GetMapping("/logout")
 	public String userlogout(HttpSession session)
 	{
@@ -73,38 +122,9 @@ public class UserController {
 		return "redirect:/";
 	}
 	
-	@GetMapping("/{id}/form")
-	public String updadeForm(Model model, @PathVariable(value="id")Long id,HttpSession session)
-	{
-		illegalAccessCheck(id, session);
-		
-		log.debug(id.toString());
-		UserData user = userRepository.findOne(id);
-		model.addAttribute("updateUser", user);
-		log.debug(user.toString());
-		return "user/form";
-	}
 	
 	
-	@PutMapping("/update")
-	public String update(UserData userData ,Long id,HttpSession session)
-	{
-		
-		illegalAccessCheck(id, session);
-		
-		log.debug(userData.toString());
-		UserData user = userRepository.findOne(id);
-		log.debug(user.toString());
-		log.debug("user" + user.getUserId().equals(userData.getUserId()) );
-		log.debug("password" + user.checkPassword(userData.getPassword()));
-		
-		boolean check = user.userUpdate(userData);
-		
-		if(check == true)
-			userRepository.save(user);
-		
-		return "redirect:/user/list";
-	}
+	
 
 	private void illegalAccessCheck(Long id, HttpSession session) throws IllegalAccessError {
 		UserData loginUser = AuthUtills.getLoginUser(session);

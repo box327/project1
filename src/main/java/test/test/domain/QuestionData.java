@@ -1,13 +1,14 @@
 package test.test.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class QuestionData {
@@ -16,9 +17,16 @@ public class QuestionData {
 	@GeneratedValue
 	private long id;
 	
-	@OneToOne()
+	@ManyToOne
 	private UserData writer;
 	
+	@OneToMany(mappedBy="question")
+	private List<AnswerData> answers;
+
+	public void setAnswers(List<AnswerData> answers) {
+		this.answers = answers;
+	}
+
 	@Column(length=40, nullable=false)
 	private String title;
 	@Column(length=2000, nullable=false)
@@ -31,7 +39,11 @@ public class QuestionData {
 		writeDate = new Date();
 	}
 	
-	
+
+	public List<AnswerData> getAnswers() {
+		return answers;
+	}
+
 	
 	public void setWriter(UserData writer) {
 		this.writer = writer;
@@ -84,8 +96,8 @@ public class QuestionData {
 	
 	@Override
 	public String toString() {
-		return "QuestionData [id=" + id + ", writer=" + writer + ", title=" + title + ", contents=" + contents
-				+ ", writeDate=" + writeDate + "]";
+		return "QuestionData [id=" + id + ", writer=" + writer + ", answers=" + answers + ", title=" + title
+				+ ", contents=" + contents + ", writeDate=" + writeDate + "]";
 	}
 	
 }
